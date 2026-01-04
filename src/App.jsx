@@ -10,7 +10,7 @@ import Navigation from './components/Navigation';
 function App() {
   return (
     <GamificationProvider>
-      <Router>
+      <Router basename="/AIS_Projects">
         <div className="app-container">
           <Navigation />
           <Routes>
