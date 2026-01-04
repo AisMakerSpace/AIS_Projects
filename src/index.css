@@ -1,0 +1,128 @@
+:root {
+  /* Colorful Palette - Light Mode */
+  --primary: #4f46e5;
+  /* Indigo 600 */
+  --primary-light: #818cf8;
+  /* Indigo 400 */
+  --secondary: #db2777;
+  /* Pink 600 */
+  --accent: #7c3aed;
+  /* Violet 600 */
+
+  --bg-main: #ffffff;
+  /* White */
+  --bg-card: rgba(255, 255, 255, 0.7);
+  /* White glass */
+  --text-main: #1e293b;
+  /* Slate 800 */
+  --text-muted: #64748b;
+  /* Slate 500 */
+
+  --font-main: 'Inter', system-ui, sans-serif;
+  --radius: 1.5rem;
+  /* More rounded for "Playful/Toddle" feel */
+
+  /* Lighter glass border */
+  --glass-border: 1px solid rgba(255, 255, 255, 0.6);
+  /* Stronger shadow for light mode depth */
+  --glass-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.08);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-main);
+  background-color: var(--bg-main);
+  color: var(--text-main);
+  line-height: 1.6;
+  min-height: 100vh;
+  overflow-x: hidden;
+  /* Light, colorful mesh gradient */
+  background-image:
+    radial-gradient(at 0% 0%, hsla(253, 16%, 96%, 1) 0, transparent 50%),
+    radial-gradient(at 50% 0%, hsla(225, 100%, 94%, 1) 0, transparent 50%),
+    radial-gradient(at 100% 0%, hsla(339, 100%, 96%, 1) 0, transparent 50%);
+}
+
+#root {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Utilities */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem 2rem;
+  border-radius: 2rem;
+  /* Pill shape */
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  border: none;
+  text-decoration: none;
+  font-size: 1.1rem;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  color: white;
+  box-shadow: 0 10px 25px -5px rgba(79, 70, 229, 0.4);
+}
+
+.btn-primary:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 15px 30px -5px rgba(79, 70, 229, 0.5);
+}
+
+.glass-card {
+  background: var(--bg-card);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: var(--radius);
+  box-shadow: var(--glass-shadow);
+  padding: 2.5rem;
+}
+
+/* Typography */
+h1,
+h2,
+h3 {
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  color: var(--text-main);
+}
+
+h1 {
+  font-size: 4rem;
+  /* Colorful text gradient */
+  background: linear-gradient(to right, var(--primary), var(--secondary));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+@media (max-width: 768px) {
+  h1 {
+    font-size: 2.5rem;
+  }
+
+  .container {
+    padding: 0 1.5rem;
+  }
+}
