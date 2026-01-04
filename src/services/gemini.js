@@ -28,7 +28,8 @@ export const generateMathQuestion = async (topic, difficulty = "Intermediate") =
       - Use LaTeX for ALL mathematical expressions.
       - Wrap inline math in single dollar signs, e.g., $x^2$.
       - Wrap block equations in double dollar signs, e.g., $$ \int f(x) dx $$.
-      - Do NOT use plain text for math (e.g., avoid "x^2", use "$x^2$").
+      - IMPORTANT: This is a JSON response. You MUST escape all backslashes in LaTeX commands. For example, use "\\frac" instead of "\frac" and "\\sqrt" instead of "\sqrt".
+      - Do NOT use plain text for math.
 
       Return the response in valid JSON format with the following structure:
       {
@@ -39,7 +40,7 @@ export const generateMathQuestion = async (topic, difficulty = "Intermediate") =
         "isPastOlympiad": boolean,
         "olympiadSource": "Name of Olympiad (or null)"
       }
-      ensure the JSON is pure and not wrapped in markdown code blocks.
+      Strictly return ONLY the JSON object. No markdown wrapping.
     `;
 
     const response = await fetch(`${API_URL}?key=${API_KEY}`, {
@@ -71,10 +72,40 @@ export const generateMathQuestion = async (topic, difficulty = "Intermediate") =
     }
 
     const text = data.candidates[0].content.parts[0].text;
+    console.log("Raw text from Gemini:", text);
 
-    // Clean up potential markdown formatting
-    const jsonString = text.replace(/```json/g, '').replace(/```/g, '').trim();
-    return JSON.parse(jsonString);
+    // Clean up potential markdown formatting and hidden characters
+    let jsonString = text.trim();
+    if (jsonString.startsWith('```json')) {
+      jsonString = jsonString.substring(7);
+    }
+    if (jsonString.startsWith('```')) {
+      jsonString = jsonString.substring(3);
+    }
+    if (jsonString.endsWith('```')) {
+      jsonString = jsonString.substring(0, jsonString.length - 3);
+    }
+    jsonString = jsonString.trim();
+
+    try {
+      return JSON.parse(jsonString);
+    } catch (parseError) {
+      console.error("Standard JSON parse failed, attempting fallback cleanup...", parseError);
+
+      // Fallback: If AI still failed to escape backslashes, try to escape them manually for common LaTeX commands
+      // This is risky but helps as a last resort
+      const cleaned = jsonString
+        .replace(/\\(?=[^"\\\/bfnrtu])/g, '\\\\') // Escape backslashes that aren't already part of a valid escape sequence
+        .replace(/\n/g, '\\n') // Escape newlines within strings
+        .replace(/\r/g, '\\r');
+
+      try {
+        return JSON.parse(cleaned);
+      } catch (secondError) {
+        console.error("Critical: Failed to parse Gemini response even with fallback.", secondError);
+        throw new Error("Could not parse AI response as valid JSON.");
+      }
+    }
   } catch (error) {
     console.error("Error generating question:", error);
     throw error;
